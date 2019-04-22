@@ -126,9 +126,8 @@ class PHYNE_MLST(PHYNE_COMMON):
                 print('[WARNING] There are Missing data. type "~"')
                 allele_seq_id = '{0}.{1}{2}'.format(scheme, gene, allele_num)
             elif allele_num.endswith('?'):
-                print('[ERROR] There are Missing data. type "?"')
-                print('Call to Seung-il Yoo')
-                sys.exit()
+                print('[WARNING] There are Missing data. type "?"')
+                allele_seq_id = '{0}.{1}_{2}'.format(scheme, gene, allele_num.rstrip('?'))
             elif ',' in allele_num:
                 print('[ERROR] There are Missing data. type ","')
                 print('Call to Seung-il Yoo')
