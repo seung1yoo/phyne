@@ -6,10 +6,10 @@ import subprocess
 
 class PHYNE_COMMON:
     mafft_exe = '/usr/bin/mafft'
-    muscle_exe = '/BiO/BioPeople/siyoo/BioTools/muscle3.8.31_i86linux64'
-    gblocks_exe = '/BiO/BioPeople/siyoo/BioTools/Gblocks_0.91b/Gblocks'
-    fasttree_exe = '/BiO/BioPeople/siyoo/BioTools/FastTree'
-    mlst_home = '/BiO/BioPeople/siyoo/BioTools/mlst'
+    muscle_exe = '/BiO/BioPeople/siyoo/phyne/tools/muscle3.8.31_i86linux64'
+    gblocks_exe = '/BiO/BioPeople/siyoo/phyne/tools/Gblocks'
+    fasttree_exe = '/BiO/BioPeople/siyoo/phyne/tools/FastTree'
+    mlst_home = '/BiO/BioPeople/siyoo/phyne/tools/mlst'
 
     def set_dir(self, a_dir):
         if not os.path.isdir(a_dir):
