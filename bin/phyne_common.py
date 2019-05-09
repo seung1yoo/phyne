@@ -5,11 +5,18 @@ import subprocess
 
 
 class PHYNE_COMMON:
+    phyne_ortholog_exe = '/BiO/BioPeople/siyoo/phyne/bin/phyne_ortholog.py'
+    phyne_mlst_exe = '/BiO/BioPeople/siyoo/phyne/bin/phyne_mlst.py'
+
     mafft_exe = '/usr/bin/mafft'
     muscle_exe = '/BiO/BioPeople/siyoo/phyne/tools/muscle3.8.31_i86linux64'
     gblocks_exe = '/BiO/BioPeople/siyoo/phyne/tools/Gblocks'
     fasttree_exe = '/BiO/BioPeople/siyoo/phyne/tools/FastTree'
     mlst_home = '/BiO/BioPeople/siyoo/phyne/tools/mlst'
+
+    orthoMCL_exe = '/BiO/BioPeople/siyoo/phyne/lib/Orthomcl-Pipe.py'
+    parser_exe = '/BiO/BioPeople/siyoo/phyne/lib/Orthomcl_Parsing.py'
+    fommatting_exe = '/BiO/BioPeople/siyoo/phyne/lib/mclOutput_seq.py'
 
     def set_dir(self, a_dir):
         if not os.path.isdir(a_dir):
@@ -76,6 +83,13 @@ class PHYNE_COMMON:
         #args.append(out_newick)
         return args
 
+    def make_cmd_fasttree_pep_default(self, in_align_fa, out_newick):
+        args = list()
+        args.append(self.fasttree_exe)
+        args.append(in_align_fa)
+        args.append('>')
+        args.append(out_newick)
+        return args
 
 
 

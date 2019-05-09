@@ -2,7 +2,9 @@
 import os
 import json
 
-class PHYNE:
+from phyne_common import PHYNE_COMMON
+
+class PHYNE(PHYNE_COMMON):
     def __init__(self, args):
         self.mode = args.mode
         self.config = args.config
@@ -50,22 +52,31 @@ class PHYNE:
         cmd.append(args.prefix)
         return cmd
 
+    def make_cmd_ortholog(self):
+        cmd = ['python']
+        cmd.append(self.phyne_ortholog_exe)
+        cmd.extend(['-c', self.config])
+        cmd.extend(['-o', self.outdir])
+        return cmd
+
+
 def main(args):
     phyne = PHYNE(args)
+
     if args.mode in ['mlst']:
         phyne.load_conf_json()
         if phyne.conf_dic["target_scheme"]:
             cmd = phyne.make_cmd_mlst_with_scheme()
         else:
             cmd = phyne.make_cmd_mlst_without_scheme()
-        print (' '.join(cmd))
-        os.system(' '.join(cmd))
+        phyne.run_with_ossystem(cmd)
 
     elif args.mode in ['nssnp']:
         pass
 
     elif args.mode in ['ortholog']:
-        pass
+        cmd = phyne.make_cmd_ortholog()
+        phyne.run_with_ossystem(cmd)
 
 
 
