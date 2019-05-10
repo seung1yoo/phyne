@@ -5,8 +5,9 @@ import subprocess
 
 
 class PHYNE_COMMON:
-    phyne_ortholog_exe = '/BiO/BioPeople/siyoo/phyne/bin/phyne_ortholog.py'
     phyne_mlst_exe = '/BiO/BioPeople/siyoo/phyne/bin/phyne_mlst.py'
+    phyne_nssnp_exe = '/BiO/BioPeople/siyoo/phyne/bin/phyne_nssnp.py'
+    phyne_ortholog_exe = '/BiO/BioPeople/siyoo/phyne/bin/phyne_ortholog.py'
 
     mafft_exe = '/usr/bin/mafft'
     muscle_exe = '/BiO/BioPeople/siyoo/phyne/tools/muscle3.8.31_i86linux64'
@@ -81,6 +82,15 @@ class PHYNE_COMMON:
         args.append(in_align_fa)
         #args.append('>')
         #args.append(out_newick)
+        return args
+
+    def make_cmd_fasttree_dna_default_for_ossystemrun(self, in_align_fa, out_newick):
+        args = list()
+        args.append(self.fasttree_exe)
+        args.append('-nt')
+        args.append(in_align_fa)
+        args.append('>')
+        args.append(out_newick)
         return args
 
     def make_cmd_fasttree_pep_default(self, in_align_fa, out_newick):

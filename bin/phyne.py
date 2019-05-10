@@ -53,10 +53,18 @@ class PHYNE(PHYNE_COMMON):
         return cmd
 
     def make_cmd_ortholog(self):
-        cmd = ['python']
+        cmd = ['python2.7']
         cmd.append(self.phyne_ortholog_exe)
         cmd.extend(['-c', self.config])
         cmd.extend(['-o', self.outdir])
+        return cmd
+
+    def make_cmd_nssnp(self):
+        cmd = ['python2.7']
+        cmd.append(self.phyne_nssnp_exe)
+        cmd.extend(['--config', self.config])
+        cmd.extend(['--outdir', self.outdir])
+        cmd.extend(['--prefix', self.prefix])
         return cmd
 
 
@@ -72,7 +80,8 @@ def main(args):
         phyne.run_with_ossystem(cmd)
 
     elif args.mode in ['nssnp']:
-        pass
+        cmd = phyne.make_cmd_nssnp()
+        phyne.run_with_ossystem(cmd)
 
     elif args.mode in ['ortholog']:
         cmd = phyne.make_cmd_ortholog()

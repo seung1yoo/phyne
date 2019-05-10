@@ -1,4 +1,5 @@
 test
 tools
 bin/*.pyc
+bin/__pycache__
 lib/*.pyc
