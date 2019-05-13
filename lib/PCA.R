@@ -1,0 +1,6 @@
+data <- read.table('File', sep='\t', header=T, row.names=1)
+pc <- princomp(as.matrix(data), scores=TRUE)
+png(file='PreficName.PCAPlot.png', height=1000, width=1000)
+plot(pc$score[,1:2], type='n', xlab='PC 1', ylab='PC 2', main = 'PCA Plot')
+text(pc$score[,1:2], labels=colnames(data))
+dev.off()

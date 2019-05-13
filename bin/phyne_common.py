@@ -17,7 +17,7 @@ class PHYNE_COMMON:
 
     orthoMCL_exe = '/BiO/BioPeople/siyoo/phyne/lib/Orthomcl-Pipe.py'
     parser_exe = '/BiO/BioPeople/siyoo/phyne/lib/Orthomcl_Parsing.py'
-    fommatting_exe = '/BiO/BioPeople/siyoo/phyne/lib/mclOutput_seq.py'
+    fommatting_exe = '/BiO/BioPeople/siyoo/phyne/lib/mclOutput_parser.py'
 
     def set_dir(self, a_dir):
         if not os.path.isdir(a_dir):
