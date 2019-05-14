@@ -5,9 +5,8 @@ class INPUTFILES:
 	def __init__(self):
 		self.path = args.path
 		self.f_file = args.fasta
-		self.c_file = self.path + '/mclOutput_I2_0.group.count.xls'
-		self.g_file = self.path + '/mclOutput_I2_0.group.gene.xls'
-
+		self.c_file = '{0}/{1}'.format(self.path, '/mclOutput_I2_0.group.count.xls')
+		self.g_file = '{0}/{1}'.format(self.path, '/mclOutput_I2_0.group.gene.xls')
 
 class ORTHOMCL(INPUTFILES):
 	def __init__(self):
@@ -52,7 +51,7 @@ class ORTHOMCL(INPUTFILES):
 		return groupDic
 
 	def parsingSeqFile(self, f_file):
-		p_file = 'parsing.txt'
+		p_file = '{0}/{1}'.format(args.output, 'parsing.txt')
 		parsing = open(p_file, 'w')
 		for n, line in enumerate(open(f_file)):
 			if line.startswith('>'):
@@ -83,7 +82,7 @@ class ORTHOMCL(INPUTFILES):
 						else:
 							pass
 
-		with open('seqDic.txt', 'wb') as handle:
+		with open('{0}/{1}'.format(args.output, 'seqDic.txt'), 'wb') as handle:
 			pickle.dump(seqDic, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 		return seqDic
@@ -100,5 +99,6 @@ if __name__=='__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-p", "--path", help = " OrhoMCL PATH")
 	parser.add_argument("-f", "--fasta", help = "goodProteins.fasta")
+	parser.add_argument("-o", "--output", help = "output directory")
 	args = parser.parse_args()
 	main(args)

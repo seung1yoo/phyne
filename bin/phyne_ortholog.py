@@ -39,7 +39,7 @@ class ORTHOMCL(READ_CONF, PHYNE_COMMON, PHYNE_ORTHOLOGOUS):
 		cmd.append('python')
 		cmd.append(self.orthoMCL_exe)
 		cmd.append(toolDic['ortho_fasta_dir'])
-		cmd.append(outdir + '/1.orthoMCL')
+		cmd.append('{0/{1}'.format(args.outdir, '1.orthoMCL'))
 		cmd.append('40')
 
 		return cmd
@@ -48,8 +48,8 @@ class ORTHOMCL(READ_CONF, PHYNE_COMMON, PHYNE_ORTHOLOGOUS):
 		cmd = list()
 		cmd.append('python')
 		cmd.append(self.parser_exe)
-		cmd.append('mclOutput_I2_0.group')
-		cmd.append(outdir + '/1.orthoMCL/mclOutput_I2_0.group')
+		cmd.append('{0}/{1}'.format(args.outdir, 'mclOutput_I2_0.group'))
+		cmd.append('{0}/{1}'.format(args.outdir, '1.orthoMCL/mclOutput_I2_0.group'))
 		return cmd
 
 	def orthoMCL_parser(self, outdir):
@@ -57,15 +57,17 @@ class ORTHOMCL(READ_CONF, PHYNE_COMMON, PHYNE_ORTHOLOGOUS):
 		cmd.append('python')
 		cmd.append(self.fommatting_exe)
 		cmd.append('-f')
-		cmd.append(outdir + '/1.orthoMCL/2.All_fasta/goodProteins.fasta')
+		cmd.append('{0}/{1}'.format(args.outdir, '1.orthoMCL/2.All_fasta/goodProteins.fasta'))
 		cmd.append('-p')
-		cmd.append(outdir + '/1.orthoMCL')
+		cmd.append('{0}/{1}'.format(args.outdir, '1.orthoMCL'))
+		cmd.append('-o')
+		cmd.append(args.outdir)
 		return cmd
 
 
 class RESULT_FASTA(PHYNE_COMMON):
 	def __init__(self):
-		self.c_file = self.outdir + '/1.orthoMCL/mclOutput_I2_0.group.count.xls'
+		self.c_file = '{0}/{1}'.format(args.outdir, '1.orthoMCL/mclOutput_I2_0.group.count.xls')
 
 	def make_speciesDic(self):
 		speciesDic = dict()
@@ -80,18 +82,19 @@ class RESULT_FASTA(PHYNE_COMMON):
 		return speciesDic
 
 	def make_seqDic(self):
-		with open('seqDic.txt', 'rb') as handle:
+		with open('{0}/{1}'.format(args.outdir, 'seqDic.txt'), 'rb') as handle:
+#		with open('{0}'.format('seqDic.txt'), 'rb') as handle:
 			seqDic = pickle.load(handle)
 
 		return seqDic
 
 	def make_tmpFile(self):
 		self.seqDic = self.make_seqDic()
-		self.set_dir('tmp')
+		self.set_dir('{0}/{1}'.format(args.outdir, 'tmp'))
 
 		n = 0
 		for groupId, geneDic in self.seqDic.iteritems():
-			tmpfile = 'tmp/tmp' + str(n) + '.fa'
+			tmpfile = '{0}/{1}/{2}{3}.fa'.format(args.outdir, 'tmp', 'tmp', str(n))
 			tmp = open(tmpfile, 'w')
 			for num in range(len(geneDic.keys())):
 				tmp.write(geneDic[num])
@@ -101,22 +104,22 @@ class RESULT_FASTA(PHYNE_COMMON):
 
 	def run_mafft(self):
 		self.seqDic = self.make_seqDic()
-		self.mafft_path = args.outdir + '/2.mafft'
+		self.mafft_path = '{0}/{1}'.format(args.outdir, '2.mafft')
 		self.set_dir(self.mafft_path)
 
 		for num in range(len(self.seqDic)):
-			tmpfile = 'tmp/tmp' + str(num) + '.fa'
-			mafft_tmp = self.mafft_path + '/mafft_tmp' + str(num) 
+			tmpfile = '{0}/{1}/{2}{3}.fa'.format(args.outdir, 'tmp', 'tmp', str(num))
+			mafft_tmp = '{0}/{1}{2}.fa'.format(self.mafft_path, 'mafft_tmp', str(num) )
 			cmd = self.make_cmd_mafft_default(tmpfile, mafft_tmp)
-			self.run_with_subprocess(cmd, mafft_tmp, 'mafft.log')
+			self.run_with_subprocess(cmd, mafft_tmp, '{0}/{1}'.format(self.mafft_path, 'mafft.log'))
 
 
 	def run_Gblock(self):
 		self.seqDic = self.make_seqDic()
-		self.Gblock_path = args.outdir + '/3.Gblock'
+		self.Gblock_path = '{0}/{1}'.format(args.outdir, '3.Gblock')
 		self.set_dir(self.Gblock_path)
 		for num in range(len(self.seqDic)):
-			mafft_tmp = self.mafft_path + '/mafft_tmp' + str(num)
+			mafft_tmp = '{0}/{1}{2}.fa'.format(self.mafft_path, 'mafft_tmp', str(num))
 			cmd = self.make_cmd_gblocks_protein(mafft_tmp)
 			self.run_with_ossystem(cmd)
 		
@@ -131,11 +134,11 @@ class RESULT_FASTA(PHYNE_COMMON):
 	def make_orthologDic(self): 
 		self.speciesDic = self.make_speciesDic()
 		self.seqDic = self.make_seqDic()
-		self.Gblock_path = args.outdir + '/3.Gblock'
+		self.gblock_path = '{0}/{1}'.format(args.outdir, '3.Gblock')
 
 		orthologDic = dict()
 		for num in range(len(self.seqDic)):
-			gblock_file = self.Gblock_path + '/mafft_tmp' + str(num) + '-gb'
+			gblock_file = '{0}/{1}{2}.fa-gb'.format(self.gblock_path, 'mafft_tmp', str(num))
 			spec_list = list()
 			for n, line in enumerate(open(gblock_file)):
 				if line.startswith('>'):
@@ -160,9 +163,15 @@ class RESULT_FASTA(PHYNE_COMMON):
 
 		outfile = open('ortholog.fa', 'w')
 		for key, seq in orthologDic.iteritems():
-			species = '{0}{1}\n'.format('>', self.speciesDic[key])
+			species = '{0}{1}'.format('>', self.speciesDic[key])
 			outfile.write(species)
-			outfile.write(seq)
+			seq = '{0}\n'.format(seq.replace(' ', '').replace('\n', ''))
+			for n, string in enumerate(seq):
+				if n % 60 != 0 :
+					outfile.write(string)
+				else :
+					outfile.write('\n')
+					outfile.write(string)
 		return outfile
 
 
@@ -186,13 +195,13 @@ class RUN_PIPELINE(PHYNE_ORTHOLOGOUS, ORTHOMCL, RESULT_FASTA):
 			self.make_result_fa()
 
 		if 'fasttree' in toolDic['Tree']:
-			path = outdir + '/4.Fasttree'
+			path = '{0}/{1}'.format(outdir, '4.Fasttree')
 			self.set_dir(path)
-			cmd = self.make_cmd_fasttree_pep_default('ortholog.fa', path +'/out_newick')
+			cmd = self.make_cmd_fasttree_pep_default('ortholog.fa', '{0}/{1}'.format(path, 'out_newick'))
 			self.run_with_ossystem(cmd)
 
-		rm_cmd = ['rm', 'seqDic.txt']
-		self.run_with_ossystem(rm_cmd)
+#		rm_cmd = ['rm', '{0}/{1}'.format(args.outdir, 'seqDic.txt')]
+#		self.run_with_ossystem(rm_cmd)
 
 def main(args):
 	phyne_ortho = PHYNE_ORTHOLOGOUS()
