@@ -1,4 +1,5 @@
 
+import os
 import sys
 from pandas import Series
 from pandas import DataFrame
@@ -150,11 +151,25 @@ def main(args):
 	make_dic = nssnp.output_make_file(filter_gt_dic)
 
 	nssnp_fa_fn = nssnp.make_outfile_handle_dic(make_dic, args.outdir, args.prefix)
-    nssnp_newick_fn = '{0}/{1}.nssnp.newick'.format(args.outdir, args.prefix)
-    fasttree_log = '{0}/fasttree.log'.format(args.outdir)
+	nssnp_newick_fn = '{0}/{1}.nssnp.newick'.format(args.outdir, args.prefix)
+	fasttree_log = '{0}/fasttree.log'.format(args.outdir)
 
-    cmd = nssnp.make_cmd_fasttree_dna_default(nssnp_fa_fn, nssnp_newick_fn)
-    nssnp.run_with_subprocess(cmd, nssnp_newick_fn, fasttree_log)
+	cmd = nssnp.make_cmd_fasttree_dna_default(nssnp_fa_fn, nssnp_newick_fn)
+	nssnp.run_with_subprocess(cmd, nssnp_newick_fn, fasttree_log)
+
+	drawtree_rscript = os.path.join(args.outdir, 'DrawTree.R')
+	tree_png = os.path.join(args.outdir, 'PhylogeneticTree.png')
+	cmd = nssnp.make_cmd_newickToTree(nssnp_newick_fn, tree_png, drawtree_rscript)
+	nssnp.run_with_ossystem(cmd)
+
+	dist_fn = os.path.join(args.outdir, 'distance.txt')
+	cmd = nssnp.make_cmd_newickToDist(nssnp_newick_fn, dist_fn)
+	nssnp.run_with_ossystem(cmd)
+
+	pca_rscript = os.path.join(args.outdir, 'PCA.R')
+	pca_png = os.path.join(args.outdir, 'PCA.png')
+	cmd = nssnp.make_cmd_distToPCA(dist_fn, pca_png, pca_rscript)
+	nssnp.run_with_ossystem(cmd)
 
 if __name__=='__main__':
 	import argparse
