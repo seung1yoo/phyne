@@ -1,4 +1,3 @@
-
 import os
 import sys
 import subprocess
@@ -19,15 +18,23 @@ class PHYNE_MLST(PHYNE_COMMON):
         self.tmpdir = self.set_dir('{0}/tmp'.format(outdir))
         self.prefix = prefix
 
+        self.mlst_db_fa         = '{0}/db/blast/mlst.fa'.format(self.mlst_home)
+
         self.mlst_json          = '{0}/{1}.json'.format(self.tmpdir, self.prefix)
         self.mlst_novel_fa      = '{0}/{1}.novel.fa'.format(self.tmpdir, self.prefix)
         self.mlst_table         = '{0}/{1}.table'.format(self.tmpdir, self.prefix)
-        self.mlst_profile_fn    = '{0}/{1}.profile.xls'.format(self.outdir, self.prefix)
-        self.mlst_multiseq_fn   = '{0}/{1}.multiseq.fa'.format(self.tmpdir, self.prefix)
-        self.mlst_db_fa         = '{0}/db/blast/mlst.fa'.format(self.mlst_home)
         self.mlst_multialign_fn = '{0}/{1}.multialign.fa'.format(self.tmpdir, self.prefix)
         self.mlst_multialign_gb = '{0}/{1}.multialign.fa-gb'.format(self.tmpdir, self.prefix)
-        self.mlst_newick_fn     = '{0}/{1}.newick'.format(self.outdir, self.prefix)
+
+        self.mlst_profile_fn       = '{0}/{1}.mlst_profile.xls'.format(self.outdir, self.prefix)
+        self.mlst_multiseq_fa      = '{0}/{1}.mlst_sequence.fa'.format(self.outdir, self.prefix)
+        self.mlst_alignseq_fa      = '{0}/{1}.mlst_align.fa'.format(self.outdir, self.prefix)
+        self.mlst_alignseq_phylip  = '{0}/{1}.mlst_align.phylip'.format(self.outdir, self.prefix)
+        self.mlst_alignseq_dist    = '{0}/{1}.mlst_align.dist'.format(self.outdir, self.prefix)
+        self.mlst_alignset_newick  = '{0}/{1}.mlst_align.newick'.format(self.outdir, self.prefix)
+
+        self.pca_png = '{0}/{1}.PCA.png'.format(self.outdir, self.prefix)
+        self.tree_png = '{0}/{1}.PhylogeneticTree.png'.format(self.outdir, self.prefix)
 
 
     def load_input(self, infns, labels):
@@ -80,8 +87,8 @@ class PHYNE_MLST(PHYNE_COMMON):
                     print('[WARNING] Can not get allele_seq_id in {0} {1} {2}'.format(sample_id, gene, allele_num))
         self.get_allele_seq()
 
-        out_fh = open(self.mlst_multiseq_fn, 'w')
-        out_log_fh = open('{0}.order'.format(self.mlst_multiseq_fn), 'w')
+        out_fh = open(self.mlst_multiseq_fa, 'w')
+        out_log_fh = open('{0}.order'.format(self.mlst_multiseq_fa), 'w')
         for sample_id, info_dic in self.profile_dic.items():
             scheme = info_dic['scheme']
             _id_s = []
@@ -111,8 +118,24 @@ class PHYNE_MLST(PHYNE_COMMON):
                 log_items.append('{0}(len{1})'.format(_id, _len_s[idx]))
             out_log_fh.write('{0}\n'.format('\t'.join(log_items)))
 
+
         out_fh.close()
         out_log_fh.close()
+
+
+    def write_mlst_alignfa(self):
+        if os.path.isfile(self.mlst_multialign_gb):
+            out = open(self.mlst_alignseq_fa, 'w')
+            for line in open(self.mlst_multialign_gb):
+                if line.startswith('>'):
+                    out.write(line)
+                else:
+                    items = line.rstrip('\n').split()
+                    out.write('{0}\n'.format(''.join(items).upper()))
+            out.close()
+        else:
+            sys.exit()
+            print('[ERROR] Cannot found {0}'.format(self.mlst_multialign_gb))
 
 
     def get_allele_seq_id(self, scheme, gene, allele_num):
@@ -170,14 +193,35 @@ def main(args):
 
     phyne_mlst.write_mlst_multifa()
 
-    cmd = phyne_mlst.make_cmd_mafft_default(phyne_mlst.mlst_multiseq_fn, phyne_mlst.mlst_multialign_fn)
+    cmd = phyne_mlst.make_cmd_mafft_default(phyne_mlst.mlst_multiseq_fa, phyne_mlst.mlst_multialign_fn)
     phyne_mlst.run_with_subprocess(cmd, phyne_mlst.mlst_multialign_fn, '{0}/mafft.run.log'.format(phyne_mlst.tmpdir))
 
     cmd = phyne_mlst.make_cmd_gblocks_dna(phyne_mlst.mlst_multialign_fn)
     phyne_mlst.run_with_subprocess(cmd, '{0}/gblocks.run.out'.format(phyne_mlst.tmpdir), '{0}/gblocks.run.log'.format(phyne_mlst.tmpdir))
+    phyne_mlst.write_mlst_alignfa()
 
-    cmd = phyne_mlst.make_cmd_fasttree_dna_default(phyne_mlst.mlst_multialign_gb, phyne_mlst.mlst_newick_fn)
-    phyne_mlst.run_with_subprocess(cmd, phyne_mlst.mlst_newick_fn, '{0}/fasttree.run.log'.format(phyne_mlst.tmpdir))
+    cmd = phyne_mlst.make_cmd_fasttree_dna_default(phyne_mlst.mlst_multialign_gb, phyne_mlst.mlst_alignset_newick)
+    phyne_mlst.run_with_subprocess(cmd, phyne_mlst.mlst_alignset_newick, '{0}/fasttree.run.log'.format(phyne_mlst.tmpdir))
+    drawtree_rscript = os.path.join(phyne_mlst.tmpdir, 'DrawTree.R')
+    cmd = phyne_mlst.make_cmd_newickToTree(phyne_mlst.mlst_alignset_newick, phyne_mlst.tree_png, drawtree_rscript)
+    phyne_mlst.run_with_ossystem(cmd)
+
+    cmd = phyne_mlst.make_cmd_FaToPhylip(phyne_mlst.mlst_alignseq_fa, phyne_mlst.mlst_alignseq_phylip)
+    phyne_mlst.run_with_ossystem(cmd)
+
+    ## METHOD 1. alignFasta To Distance with Ninja
+    #distRaw_fn = os.path.join(phyne_mlst.tmpdir, 'distRaw')
+    #cmd = phyne_mlst.make_cmd_ninja_FaToDist(phyne_mlst.mlst_alignseq_fa, distRaw_fn, 'dna')
+    #phyne_mlst.run_with_ossystem(cmd)
+    #phyne_mlst.DistToTable(distRaw_fn, phyne_mlst.mlst_alignseq_dist)
+
+    ## METHOD 2. newick To Distance 
+    cmd = phyne_mlst.make_cmd_newickToDist(phyne_mlst.mlst_alignset_newick, phyne_mlst.mlst_alignseq_dist)
+    phyne_mlst.run_with_ossystem(cmd)
+    pca_rscript = os.path.join(phyne_mlst.tmpdir, 'PCA.R')
+    cmd = phyne_mlst.make_cmd_distToPCA(phyne_mlst.mlst_alignseq_dist, phyne_mlst.pca_png, pca_rscript)
+    phyne_mlst.run_with_ossystem(cmd)
+
 
 
 

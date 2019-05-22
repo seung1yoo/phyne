@@ -39,7 +39,7 @@ class ORTHOMCL(READ_CONF, PHYNE_COMMON, PHYNE_ORTHOLOGOUS):
 		cmd.append('python')
 		cmd.append(self.orthoMCL_exe)
 		cmd.append(toolDic['ortho_fasta_dir'])
-		cmd.append('{0/{1}'.format(args.outdir, '1.orthoMCL'))
+		cmd.append('{0}/{1}'.format(args.outdir, '1.orthoMCL'))
 		cmd.append('40')
 
 		return cmd
@@ -200,8 +200,22 @@ class RUN_PIPELINE(PHYNE_ORTHOLOGOUS, ORTHOMCL, RESULT_FASTA):
 			cmd = self.make_cmd_fasttree_pep_default('ortholog.fa', '{0}/{1}'.format(path, 'out_newick'))
 			self.run_with_ossystem(cmd)
 
-#		rm_cmd = ['rm', '{0}/{1}'.format(args.outdir, 'seqDic.txt')]
-#		self.run_with_ossystem(rm_cmd)
+		newick_fn = os.path.join(outdir, '4.Fasttree', 'out_newick')
+		drawtree_rscript = os.path.join(outdir, 'DrawTree.R')
+		tree_png = os.path.join(outdir, 'PhylogeneticTree.png')
+		cmd = self.make_cmd_newickToTree(newick_fn, tree_png, drawtree_rscript)
+		self.run_with_ossystem(cmd)
+
+		dist_fn = os.path.join(outdir, 'distance.txt')
+		cmd = self.make_cmd_newickToDist(newick_fn, dist_fn)
+		self.run_with_ossystem(cmd)
+
+		pca_rscript = os.path.join(outdir, 'PCA.R')
+		pca_png = os.path.join(outdir, 'PCA.png')
+		cmd = self.make_cmd_distToPCA(dist_fn, pca_png, pca_rscript)
+		self.run_with_ossystem(cmd)
+
+
 
 def main(args):
 	phyne_ortho = PHYNE_ORTHOLOGOUS()
