@@ -23,6 +23,8 @@
 
 ## Usage
 
+### Help message
+
 ```
 $python bin/phyne.py --help
 usage: phyne.py [-h] [--mode {mlst,nssnp,ortholog}] [--config CONFIG]
@@ -39,38 +41,45 @@ optional arguments:
 
 ### MLST
 
-#### Example Command line
+#### General Command line
 ```
-$python bin/phyne.py -mode mlst --config [mlst.conf] --outdir [result] --prefix [testset]
+$python bin/phyne.py --mode mlst --config [mlst.conf] --outdir [result] --prefix [testset]
 ```
 
 #### Input & Output
-- Input : Bacterial genome sequence (FASTA format)
+- Input
+ - Bacterial genome sequences (FASTA format)
 - Output
  - {outdir}/{prefix}.mlst_profile.xls : MLST profile (a tab-separated line)
- - col 1 : the genome name
- - col 2 : the matching PubMLST scheme name
- - col 3 : the ST (sequence type)
- - col 4~ : the allele IDs
 
-| example_1 | senterica | 365 | aroC(130) | dnaN(97) | hemD(25) | hisD(125) | purE(84) | sucA(9) | thrA(101) |
-| example_2 | senterica | 2 | aroC(1) | dnaN(1) | hemD(2) | hisD(1) | purE(1) | sucA(1) | thrA(5) |
-| ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
-
-
- - {outdir}/{prefix}.mlst_sequence.fa
- - {outdir}/{prefix}.mlst_sequence.fa.order
- - {outdir}/{prefix}.mlst_align.fa
- - {outdir}/{prefix}.mlst_align.phylip
- - {outdir}/{prefix}.mlst_align.newick
- - {outdir}/{prefix}.mlst_align.dist
- - {outdir}/{prefix}.PhylogeneticTree.png
- - {outdir}/{prefix}.PCA.png
+		```
+GCA_000439795.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
+GCA_000013125.1 aphagocytophilum        161     pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(82)        dnaN(28)      atpA(26)
+GCA_000439775.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
+GCA_000689655.1 aphagocytophilum        215     pheS(103)       glyA(77)        fumC(28)        mdh(4)  sucA(94)        dnaN(28)      atpA(60)
+GCA_000689635.2 aphagocytophilum        82      pheS(3) glyA(33)        fumC(29)        mdh(3)  sucA(2) dnaN(2) atpA(4)
+GCA_000964685.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
+GCA_000689615.1 aphagocytophilum        217     pheS(104)       glyA(78)        fumC(70)        mdh(53) sucA(95)        dnaN(77)      atpA(1)
+GCA_000478425.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
+GCA_000968455.1 aphagocytophilum        -       pheS(42)        glyA(32)        fumC(28)        mdh(18?)        sucA(40)        dnaN(28)       atpA(26)
+```
+ >  - col 1 : the genome name
+ >  - col 2 : the matching PubMLST scheme name
+ >  - col 3 : the ST (sequence type)
+ >  - col 4 ~ : the allele IDs
+ - {outdir}/{prefix}.mlst_sequence.fa : Allele sequences are arranged in order
+ - {outdir}/{prefix}.mlst_sequence.fa.order : THE order
+ - {outdir}/{prefix}.mlst_align.fa : multiple sequence alignment ([fasta](https://en.wikipedia.org/wiki/FASTA_format))
+ - {outdir}/{prefix}.mlst_align.phylip : multiple sequence alignment ([phylip](http://rosalind.info/glossary/phylip-format/))
+ - {outdir}/{prefix}.mlst_align.newick : tree ([newick](https://en.wikipedia.org/wiki/Newick_format))
+ - {outdir}/{prefix}.mlst_align.dist : Sequence distance metrics
+ - {outdir}/{prefix}.PhylogeneticTree.png : very simple phylogenetic tree figure
+ - {outdir}/{prefix}.PCA.png : PCA plot
 
 
 #### Config file
 
-- target scheme 이 없을 때, (de-novo mlst)
+- Without target scheme
 
 ```
 $ cat bin/phyne_mlst.conf
@@ -86,7 +95,7 @@ $ cat bin/phyne_mlst.conf
 }
 ```
 
-- target scheme 이 있을 때, (targeted mlst)
+- With target scheme 
  - [Scheme list](https://pubmlst.org/data/dbases.xml)
  
 ```
@@ -125,7 +134,9 @@ configration file 정보
 안하고 싶으면 N으로 바꿔라 
 
 
-
-constact : seungil.yoo@theragenetex.com
+## Contributors
+- seungil.yoo@theragenetex.com
+- ingang.shin@theragenetex.com
+- boram.choi@threagenetex.com
 
 lastest update : 2019-05-23
