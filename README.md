@@ -47,12 +47,14 @@ $python bin/phyne.py --mode mlst --config [mlst.conf] --outdir [result] --prefix
 ```
 
 #### Input & Output
-- Input
- - Bacterial genome sequences (FASTA format)
-- Output
- - {outdir}/{prefix}.mlst_profile.xls : MLST profile (a tab-separated line)
 
-		```
+ - Input : Bacterial genome sequences (FASTA format)
+
+ - Output
+  1. {outdir}/{prefix}.mlst_profile.xls : MLST profile (a tab-separated line)
+
+
+```
 GCA_000439795.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
 GCA_000013125.1 aphagocytophilum        161     pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(82)        dnaN(28)      atpA(26)
 GCA_000439775.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
@@ -63,18 +65,21 @@ GCA_000689615.1 aphagocytophilum        217     pheS(104)       glyA(78)        
 GCA_000478425.1 aphagocytophilum        64      pheS(42)        glyA(32)        fumC(28)        mdh(18) sucA(40)        dnaN(28)      atpA(26)
 GCA_000968455.1 aphagocytophilum        -       pheS(42)        glyA(32)        fumC(28)        mdh(18?)        sucA(40)        dnaN(28)       atpA(26)
 ```
+
  >  - col 1 : the genome name
  >  - col 2 : the matching PubMLST scheme name
  >  - col 3 : the ST (sequence type)
  >  - col 4 ~ : the allele IDs
- - {outdir}/{prefix}.mlst_sequence.fa : Allele sequences are arranged in order
- - {outdir}/{prefix}.mlst_sequence.fa.order : THE order
- - {outdir}/{prefix}.mlst_align.fa : multiple sequence alignment ([fasta](https://en.wikipedia.org/wiki/FASTA_format))
- - {outdir}/{prefix}.mlst_align.phylip : multiple sequence alignment ([phylip](http://rosalind.info/glossary/phylip-format/))
- - {outdir}/{prefix}.mlst_align.newick : tree ([newick](https://en.wikipedia.org/wiki/Newick_format))
- - {outdir}/{prefix}.mlst_align.dist : Sequence distance metrics
- - {outdir}/{prefix}.PhylogeneticTree.png : very simple phylogenetic tree figure
- - {outdir}/{prefix}.PCA.png : PCA plot
+ 
+ 
+ 2. {outdir}/{prefix}.mlst_sequence.fa : Allele sequences are arranged in order
+ 3. {outdir}/{prefix}.mlst_sequence.fa.order : THE order
+ 4. {outdir}/{prefix}.mlst_align.fa : multiple sequence alignment ([fasta](https://en.wikipedia.org/wiki/FASTA_format))
+ 5. {outdir}/{prefix}.mlst_align.phylip : multiple sequence alignment ([phylip](http://rosalind.info/glossary/phylip-format/))
+ 6. {outdir}/{prefix}.mlst_align.newick : tree ([newick](https://en.wikipedia.org/wiki/Newick_format))
+ 7. {outdir}/{prefix}.mlst_align.dist : Sequence distance metrics
+ 8. {outdir}/{prefix}.PhylogeneticTree.png : very simple phylogenetic tree figure
+ 9. {outdir}/{prefix}.PCA.png : PCA plot
 
 
 #### Config file
