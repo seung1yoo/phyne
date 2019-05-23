@@ -138,6 +138,11 @@ configration file 정보
 안하고 싶으면 N으로 바꿔라 
 
 
+![workflow of ortholog mode](./image/workflow_ortholog_mode.png)
+
+
+
+
 ## Contributors
 - seungil.yoo@theragenetex.com
 - ingang.shin@theragenetex.com
