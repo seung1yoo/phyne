@@ -107,9 +107,12 @@ class RESULT_FASTA(PHYNE_COMMON):
 				gene_seq = geneDic[num].lstrip('>').split('\n')
 				gene = gene_seq[0]
 				seq = gene_seq[1]
-				text = '{0}\t{1}\t{2}\t{3}\n'.format(cluster, species, gene, seq)
-				singleout.write(text)
+
+				preunits = [cluster, species, gene, seq]
+				units = [x.strip() for x in preunits]
+				singleout.write('{0}\n'.format('\t'.join(units)))
 			n += 1
+		singleout.close()
 
 		return n
 
