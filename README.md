@@ -100,8 +100,7 @@ $ cat bin/phyne_mlst.conf
 }
 ```
 
-- With target scheme 
- - [Scheme list](https://pubmlst.org/data/dbases.xml)
+- With target scheme [Scheme list](https://pubmlst.org/data/dbases.xml)
  
 ```
 $ cat bin/phyne_mlst.conf
