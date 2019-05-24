@@ -41,6 +41,10 @@ optional arguments:
 
 ### MLST
 
+#### Workflow
+
+![workflow_mlst_mode](./image/workflow_mlst_mode.png)
+
 #### General Command line
 ```
 $python bin/phyne.py --mode mlst --config [mlst.conf] --outdir [result] --prefix [testset]
