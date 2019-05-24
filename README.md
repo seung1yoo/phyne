@@ -144,8 +144,13 @@ $python bin/phyne.py --mode nssnp --config [mlst.conf] --outdir [result] --prefi
 
 #### Input & Output
 
-
-
+- Input file : Multisample variant calling data (format : vcf)
+- Output file
+1. {outdir}/{prefix}.nssnp.fasta  : Nonsynoymous SNP concatenated data (format : fasta)
+2. {outdir}/{prefix}.nssnp.newick : tree (format : newick)
+3. {outdir}/distance.txt          : Sequence distance metrics
+4. {outdir}/PhylogeneticTree.png  : Phylogenetic tree figure
+5. {outdir]/PCA.png               : PCA plot
 
 #### Config file
 ```
@@ -161,17 +166,20 @@ HET=70.0,30.0
 ALT=90.0
 ```
 
-Mandatory arguments :
- - config (file_path)    Pipeline usage input configure file
- - outdir (dir_path)     Output directory
- - prefix (STRING)       Output result file name
-Filter optional arguments :
- - GQ     (INT)          Genotype quality score           default=60
- - DP     (INT)          Genotype total read depth        default=10
- - REF    (FLOAT)        Reference allele ratio           default=90.0
- - HET    (FLOAT,FLOAT)  Heterozygous allele ratio        default=70.0,30.0 (mean = 70 : 30)
- - ALT    (FLOAT)        Alternative allele ratio         default=90.0
-                                                                                                                                       *The above options will be removed if they do not SNP the conditions.
+Mandatory arguments
+- config (file_path) : Pipeline usage input configure file
+- outdir (dir_path) : Output directory
+- prefix (STRING) : Output result file name
+
+
+Filter optional arguments
+- GQ (INT) : Genotype quality score (default=60)
+- DP (INT) : Genotype total read depth (default=10)
+- REF (FLOAT) : Reference allele ratio (default=90.0)
+- HET (FLOAT,FLOAT) : Heterozygous allele ratio (default=70.0,30.0 (mean = 70 : 30))
+- ALT (FLOAT) : Alternative allele ratio (default=90.0)
+
+! The above options will be removed if they do not SNP the conditions.
 
 ![nssnp_config](./image/nssnp_config.png)
 
