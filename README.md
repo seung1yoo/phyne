@@ -143,29 +143,40 @@ input vcf 이다.
 
 Based on the evolutionary similarity of sequences, a pipeline that draws phylogenetic trees by selecting only single copy genes of two or more species/genomes
 
+#### Workflow
+![ortholog workflow](./image/ortholog_workflow.png)
+
+ - Step1. orthoMCL (ortholog Groups of Protein Sequences) : 진화론적인 입장에서 서열의 유사성을 근거로한 종간의 동일 기능 유전자를 grouping한 데이터베이스인 orthoMCL을 사용하여 종간의 gene cluster 생성
+ - Step2. Single copy gene : gene cluster에서 종간의 Single copy gene cluster만 선별  
+ - Step3. Multiple sequence alignment : Single copy gene cluster 별로 mafft를  사용하여 multiple sequence alignment
+ - Step4. Gblocks : alignment한 sequence에서 퀄리티가 낮은 영역(ambiguously aligned regions)을 제거
+ - Step5. FastTree : Gblocks까지 완료된 cluster별 서열을 merge 후, newick 파일 생성
+ - Step6. distance metrics & PCA plot : newick을 이용하여 distance를 구하고, PCA plot 생성
+
+#### General Command line
 ```
-python bin/phyne.py --mode ortholog --config [ortholog.conf] --outdir [Result] --prefix [test]
+python bin/phyne.py --mode ortholog --config [ortholog.conf] --outdir [result] --prefix [testset]
 ```
 
-##### Input & Output
+#### Input & Output
 - Input : protein sequences (FASTA format)  
 
 - Output :  
- - Intermediate directory  
- 1.{outdir}/1.orthoMCL : orthoMCL-Run Result files   
- 2.{outdir}/2.mafft : multiple sequence alignment of each single copy gene cluster (fasta)  
- 3.{outdir}/3.Gblock : The sequence from which the region with low quality is removed (fasta)  
- 4.{outdir}/4.fasttree : newick file
+ - Intermediate directory
+ 1. {outdir}/1.orthoMCL : orthoMCL-Run Result files
+ 2. {outdir}/2.mafft : multiple sequence alignment of each single copy gene cluster (fasta)
+ 3. {outdir}/3.Gblock : The sequence from which the region with low quality is removed (fasta)
+ 4. {outdir}/4.fasttree : newick file
 
  - Final files  
- 1.{outdir}/Report/ortholog.fa : multiple sequnece alignmet merge
- 2.{outdir}/Report/newick.txt : tree
- 3.{outdir}/Report/SinglecopyGene.xls : single copy gene lists between species
- 4.{outdir}/Report/distance.txt : Sequence distance metrics
- 5.{outdir}Report/PhylogeneticTree.png : very simple phylogenetic tree figure
- 6.{outdir}/Report/PCA.png : PCA plot
+ 1. {outdir}/Report/ortholog.fa : multiple sequnece alignmet merge
+ 2. {outdir}/Report/newick.txt : tree
+ 3. {outdir}/Report/SinglecopyGene.xls : single copy gene lists between species
+ 4. {outdir}/Report/distance.txt : Sequence distance metrics
+ 5. {outdir}/Report/PhylogeneticTree.png : very simple phylogenetic tree figure
+ 6. {outdir}/Report/PCA.png : PCA plot
 
-##### Input argument
+#### Config file
 - phyne_ortholog.conf :
 
 ```
@@ -180,39 +191,13 @@ ortholog_fa     =       Y
 Tree    =       fasttree
 ```
 
-__orthoMCL__을 실행 시키려면 __Y__, 다음 Step만 진행 하고자 한다면 __N__  
-__ortho_fasta_dir__은 종들의 fasta 파일이 있는 directory 경로 입력  
-__ortho_thread__는 orthoMCL의 thread를 설정해주는 것으로, 기본 __40__으로 설정  
-__parser__는 Single copy gene을 선별하는 script 실행, 이미 진행 했다6 __N__으로 설정  
-__ortholog_fa__는 종 별 Single copy gene의 서열을 모아놓은 fasta 생성
+- orthoMCL을 실행 시키려면 Y, 다음 Step만 진행 하고자 한다면 N
+- ortho_fasta_dir은 종들의 fasta 파일이 있는 directory 경로 입력  
+- ortho_thread는 orthoMCL의 thread를 설정해주는 것으로, 기본 40으로 설정  
+- parser는 Single copy gene을 선별하는 script 실행, 이미 진행 했다6 N으로 설정  
+- ortholog_fa는 종 별 Single copy gene의 서열을 모아놓은 fasta 생성
 
- __! 처음 실행시킬때에는 모두 Y로 실행 시키고, 원하는 step부터 실행시키고자 할 때 N으로 변경하여 사용하면 된다.__
-
-#### Ortholog WORKFLOW
-![ortholog workflow](./image/ortholog_workflow.png)
-
-
-###### Step1. orthoMCL (ortholog Groups of Protein Sequences)
-- 진화론적인 입장에서 서열의 유사성을 근거로한 종간의 동일 기능 유전자를 grouping한 데이터베이스인 orthoMCL을 사용하여   
-종간의 gene cluster 생성
-
-###### Step2. Single copy gene
-- gene cluster에서 종간의 Single copy gene cluster만 선별  
-
-###### Step3. Multiple sequence alignment
-- Single copy gene cluster 별로 mafft를  사용하여 multiple sequence alignment
-
-###### Step4. Gblocks
-- alignment한 sequence에서 퀄리티가 낮은 영역(ambiguously aligned regions)을 제거
-
-###### Step5. FastTree
-- Gblocks까지 완료된 cluster별 서열을 merge 후, newick 파일 생성
-
-###### Step5. distance metrics & PCA plot
-- newick을 이용하여 distance를 구하고, PCA plot 생성
-
-
-
+! 처음 실행시킬때에는 모두 Y로 실행 시키고, 원하는 step부터 실행시키고자 할 때 N으로 변경하여 사용하면 된다.
 
 
 ## Contributors
