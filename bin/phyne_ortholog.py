@@ -68,6 +68,8 @@ class ORTHOMCL(READ_CONF, PHYNE_COMMON, PHYNE_ORTHOLOGOUS):
 class RESULT_FASTA(PHYNE_COMMON):
 	def __init__(self):
 		self.c_file = '{0}/{1}'.format(args.outdir, '1.orthoMCL/mclOutput_I2_0.group.count.xls')
+		self.g_file = '{0}/{1}'.format(args.outdir, '1.orthoMCL/mclOutput_I2_0.group.gene.xls')
+
 
 	def make_speciesDic(self):
 		speciesDic = dict()
@@ -216,7 +218,8 @@ class RUN_PIPELINE(PHYNE_ORTHOLOGOUS, ORTHOMCL, RESULT_FASTA):
 
 		newick_fn = os.path.join(args.outdir, '4.Fasttree', 'out_newick')
 		report_fn = os.path.join(args.outdir, 'Report', 'newick.txt')
-		os.link(newick_fn, report_fn)
+		if not os.path.isfile(report_fn):
+			os.link(newick_fn, report_fn)
 
 		drawtree_rscript = os.path.join(args.outdir, 'DrawTree.R')
 		tree_png = os.path.join(args.outdir, 'Report', 'PhylogeneticTree.png')
@@ -233,6 +236,8 @@ class RUN_PIPELINE(PHYNE_ORTHOLOGOUS, ORTHOMCL, RESULT_FASTA):
 		cmd = self.make_cmd_distToPCA(dist_fn, pca_png, pca_rscript)
 		self.run_with_ossystem(cmd)
 
+		os.system('cp {0} {1}'.format(self.c_file, os.path.join(args.outdir, 'Report', 'orthologous_group.count.xls')))
+		os.system('cp {0} {1}'.format(self.g_file, os.path.join(args.outdir, 'Report', 'orthologous_group.gene.xls')))
 
 
 def main(args):
