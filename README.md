@@ -132,12 +132,49 @@ $ cat bin/phyne_mlst.conf
 
 ### NSSNP (Non-Synoymous SNP)
 
+#### Workflow
+
+multisample vcf ==> Defind and select Non-Synoymous SNPs  ==> Phylogenetic analysis
+
+
+#### General Command line
 ```
-python bin/phyne.py --mode nssnp --config --outdir --prefix
+$python bin/phyne.py --mode nssnp --config [mlst.conf] --outdir [result] --prefix [testset]
 ```
 
-필터링옵션 case 별로 상세하게 적고.
-input vcf 이다.
+#### Input & Output
+
+
+
+
+#### Config file
+```
+### REQUERMENT ARGUMENTS ###
+INPUT=path/to/multisample.snpeff.test.vcf
+SAMPLE_IDS=SAMPLE1,SAMPLE2,SAMPLE3,SAMPLE4,SAMPLE5
+
+### OPTIONAL ARGUMENTS ###
+GQ=60
+DP=10
+REF=90.0
+HET=70.0,30.0
+ALT=90.0
+```
+
+Mandatory arguments :
+ - config (file_path)    Pipeline usage input configure file
+ - outdir (dir_path)     Output directory
+ - prefix (STRING)       Output result file name
+Filter optional arguments :
+ - GQ     (INT)          Genotype quality score           default=60
+ - DP     (INT)          Genotype total read depth        default=10
+ - REF    (FLOAT)        Reference allele ratio           default=90.0
+ - HET    (FLOAT,FLOAT)  Heterozygous allele ratio        default=70.0,30.0 (mean = 70 : 30)
+ - ALT    (FLOAT)        Alternative allele ratio         default=90.0
+                                                                                                                                       *The above options will be removed if they do not SNP the conditions.
+
+![nssnp_config](./image/nssnp_config.png)
+
 
 ### Ortholog (Single copy genes)
 

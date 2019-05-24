@@ -24,11 +24,11 @@ class NSSNP(PHYNE_COMMON):
 				self.conf_dic.setdefault(conf_key, samples)
 			elif conf_key in ['INPUT']:
 				self.conf_dic.setdefault(conf_key, conf_value)
-			elif conf_key in ['GQ', 'GT_DP']:
+			elif conf_key in ['GQ', 'DP']:
 				self.conf_dic.setdefault(conf_key, int(conf_value))
-			elif conf_key in ['REF_ratio', 'ALT_ratio']:
+			elif conf_key in ['REF', 'ALT']:
 				self.conf_dic.setdefault(conf_key, float(conf_value))
-			elif conf_key in ['HETERO_ratio']:
+			elif conf_key in ['HET']:
 				hetero_ratio_s = conf_value.split(',')
 				self.conf_dic.setdefault(conf_key, [float(x) for x in hetero_ratio_s])
 			else:
@@ -88,18 +88,18 @@ class NSSNP(PHYNE_COMMON):
 				alt = gt_info[1].split(',')[1]
 				DP = gt_info[2]
 				GQ = gt_info[3]
-				if int(GQ) >= self.conf_dic['GQ'] and int(DP) >= self.conf_dic['GT_DP']:
+				if int(GQ) >= self.conf_dic['GQ'] and int(DP) >= self.conf_dic['DP']:
 					if gt == '0/0' :
-						if (int(ref) * 100.0 / int(DP)) < self.conf_dic['REF_ratio']:
+						if (int(ref) * 100.0 / int(DP)) < self.conf_dic['REF']:
 							continue
 						gt = '{0}{1}'.format(ref_gt, ref_gt)
 					elif gt == '0/1' :
-						if (int(ref) * 100.0 / int(DP)) < self.conf_dic['HETERO_ratio'][0] or \
-                        (int(ref) * 100.0 / int(DP)) > self.conf_dic['HETERO_ratio'][1]:
+						if (int(ref) * 100.0 / int(DP)) < self.conf_dic['HET'][0] or \
+                        (int(ref) * 100.0 / int(DP)) > self.conf_dic['HET'][1]:
 							continue
 						gt = '{0}{1}'.format(ref_gt, alt_gt)
 					elif gt == '1/1' :
-						if (int(alt) * 100.0 / int(DP)) < self.conf_dic['ALT_ratio']:
+						if (int(alt) * 100.0 / int(DP)) < self.conf_dic['ALT']:
 							continue
 						gt = '{0}{1}'.format(alt_gt, alt_gt)
 				else:
