@@ -1,5 +1,12 @@
 # phyne (PHYlogenetic analysis pipeliNE)
 
+## Workflow
+
+![workflow_phyne](./image/workflow_phyne.png)
+
+phyne는 phylogenetic analysis를 위한 파이프라인으로 다양한 인풋을 지원합니다.
+
+
 ## Development Environment
  - server : wolf
  - language : python 2.7
